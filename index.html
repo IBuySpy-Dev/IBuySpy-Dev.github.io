@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IBuySpy-Dev · App Migration Factory</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0078d4;
+      --blue-dark: #005a9e;
+      --blue-light: #e8f3fb;
+      --bg: #f5f5f5;
+      --white: #ffffff;
+      --text: #1a1a1a;
+      --text-muted: #555;
+      --border: #e0e0e0;
+      --radius: 8px;
+      --shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      height: 52px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    nav .nav-brand {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    nav .nav-links {
+      display: flex;
+      gap: 1.25rem;
+      margin-left: auto;
+      list-style: none;
+      font-size: .9rem;
+    }
+    nav .nav-links a { color: var(--text-muted); }
+    nav .nav-links a:hover { color: var(--blue); text-decoration: none; }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+      color: var(--white);
+      text-align: center;
+      padding: 5rem 2rem 4rem;
+    }
+    .hero-icon { font-size: 4rem; line-height: 1; margin-bottom: 1rem; }
+    .hero h1 { font-size: 2.75rem; font-weight: 700; letter-spacing: -.5px; }
+    .hero h2 { font-size: 1.4rem; font-weight: 400; opacity: .9; margin: .4rem 0 1rem; }
+    .hero p  { font-size: 1.1rem; opacity: .85; max-width: 560px; margin: 0 auto 2rem; }
+    .btn {
+      display: inline-block;
+      background: var(--white);
+      color: var(--blue);
+      font-weight: 700;
+      font-size: 1rem;
+      padding: .75rem 1.75rem;
+      border-radius: var(--radius);
+      transition: box-shadow .15s, transform .15s;
+    }
+    .btn:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,.2);
+      transform: translateY(-1px);
+      text-decoration: none;
+    }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0;
+    }
+    .stat {
+      padding: 1.1rem 2.5rem;
+      text-align: center;
+      border-right: 1px solid var(--border);
+    }
+    .stat:last-child { border-right: none; }
+    .stat-value { font-size: 1.75rem; font-weight: 700; color: var(--blue); }
+    .stat-label { font-size: .8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; }
+
+    /* ── SECTIONS ── */
+    section { padding: 3.5rem 2rem; }
+    .section-inner { max-width: 1000px; margin: 0 auto; }
+    h3.section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1.75rem;
+      color: var(--text);
+    }
+
+    /* ── WHAT WE DO CARDS ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      box-shadow: var(--shadow);
+    }
+    .card-icon { font-size: 2rem; margin-bottom: .75rem; }
+    .card h4 { font-size: 1.1rem; font-weight: 700; margin-bottom: .5rem; }
+    .card p  { font-size: .9rem; color: var(--text-muted); }
+
+    /* ── PIPELINE ── */
+    .pipeline-wrap {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem 1.5rem;
+      box-shadow: var(--shadow);
+      overflow-x: auto;
+    }
+    .pipeline {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      min-width: 620px;
+    }
+    .pipeline-step {
+      flex: 1;
+      text-align: center;
+      position: relative;
+    }
+    .pipeline-step:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: -10px;
+      top: 50%;
+      transform: translateY(-70%);
+      color: var(--blue);
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+    .ps-badge {
+      display: inline-block;
+      background: var(--blue-light);
+      border: 2px solid var(--blue);
+      color: var(--blue);
+      border-radius: 6px;
+      padding: .45rem .9rem;
+      font-weight: 700;
+      font-size: .85rem;
+      white-space: nowrap;
+    }
+    .pipeline-step:last-child .ps-badge {
+      background: #e6f4ea;
+      border-color: #2e7d32;
+      color: #2e7d32;
+    }
+    .ps-label {
+      display: block;
+      font-size: .75rem;
+      color: var(--text-muted);
+      margin-top: .4rem;
+    }
+
+    /* ── APPS TABLE ── */
+    .apps-section { background: var(--bg); }
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .app-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: .35rem;
+    }
+    .app-card .app-name { font-weight: 700; font-size: 1rem; }
+    .app-card .app-repo { font-size: .8rem; color: var(--text-muted); }
+    .app-card .app-meta {
+      display: flex;
+      gap: .5rem;
+      margin-top: .25rem;
+      flex-wrap: wrap;
+    }
+    .badge {
+      font-size: .72rem;
+      font-weight: 600;
+      padding: .2rem .55rem;
+      border-radius: 100px;
+      background: var(--blue-light);
+      color: var(--blue);
+    }
+    .badge.stage {
+      background: #fff3e0;
+      color: #e65100;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #1a1a1a;
+      color: #ccc;
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: .88rem;
+    }
+    footer a { color: #6cb4f5; }
+    footer .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-top: .75rem;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 2rem; }
+      .hero h2 { font-size: 1.1rem; }
+      .stat { padding: .9rem 1.25rem; }
+      .stat-value { font-size: 1.4rem; }
+      nav .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-brand">🏭 IBuySpy-Dev</span>
+  <ul class="nav-links">
+    <li><a href="#what-we-do">What We Do</a></li>
+    <li><a href="#pipeline">Pipeline</a></li>
+    <li><a href="#apps">Apps</a></li>
+    <li><a href="https://ibuyspy-dev.github.io/app-migration-with-ai/">Factory Dashboard</a></li>
+    <li><a href="https://github.com/IBuySpy-Dev">GitHub</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-icon">🏭</div>
+  <h1>IBuySpy-Dev</h1>
+  <h2>App Migration Factory</h2>
+  <p>Modernizing legacy .NET applications to Azure — one app at a time.</p>
+  <a class="btn" href="https://ibuyspy-dev.github.io/app-migration-with-ai/">View Factory Dashboard →</a>
+</header>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-value">53</div>
+    <div class="stat-label">Apps Registered</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">5</div>
+    <div class="stat-label">In Progress</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">7</div>
+    <div class="stat-label">Andon Active</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">3</div>
+    <div class="stat-label">Retired</div>
+  </div>
+</div>
+
+<!-- WHAT WE DO -->
+<section id="what-we-do" style="background: var(--white);">
+  <div class="section-inner">
+    <h3 class="section-title">What We Do</h3>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">🔍</div>
+        <h4>Assess</h4>
+        <p>We inventory legacy apps, score complexity, and select the right migration treatment for each workload.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔧</div>
+        <h4>Migrate</h4>
+        <p>Rehost, replatform, or rewrite — we take apps through a repeatable 5-station factory pipeline with full traceability.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">✅</div>
+        <h4>Verify</h4>
+        <p>Every app exits the factory with CI/CD, Managed Identity, and content smoke tests confirming production readiness.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PIPELINE -->
+<section id="pipeline">
+  <div class="section-inner">
+    <h3 class="section-title">Migration Stations</h3>
+    <div class="pipeline-wrap">
+      <div class="pipeline">
+        <div class="pipeline-step">
+          <span class="ps-badge">📥 Intake</span>
+          <span class="ps-label">Register &amp; triage</span>
+        </div>
+        <div class="pipeline-step">
+          <span class="ps-badge">S1 Inventory</span>
+          <span class="ps-label">Dependencies</span>
+        </div>
+        <div class="pipeline-step">
+          <span class="ps-badge">S2 Assessment</span>
+          <span class="ps-label">Score &amp; plan</span>
+        </div>
+        <div class="pipeline-step">
+          <span class="ps-badge">S3 Rehost</span>
+          <span class="ps-label">Lift &amp; shift</span>
+        </div>
+        <div class="pipeline-step">
+          <span class="ps-badge">S4 Replatform</span>
+          <span class="ps-label">Containerize</span>
+        </div>
+        <div class="pipeline-step">
+          <span class="ps-badge">S5 Modernize</span>
+          <span class="ps-label">Cloud-native</span>
+        </div>
+        <div class="pipeline-step">
+          <span class="ps-badge">✅ Done</span>
+          <span class="ps-label">Verified</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FACTORY APPS -->
+<section id="apps" class="apps-section">
+  <div class="section-inner">
+    <h3 class="section-title">Factory Apps</h3>
+    <div class="apps-grid">
+
+      <div class="app-card">
+        <span class="app-name">Jobs Portal</span>
+        <span class="app-repo"><a href="https://github.com/IBuySpy-Dev/app-jobs-migration">app-jobs-migration</a></span>
+        <div class="app-meta">
+          <span class="badge">Replatform</span>
+          <span class="badge stage">S5</span>
+        </div>
+      </div>
+
+      <div class="app-card">
+        <span class="app-name">TimeTracker</span>
+        <span class="app-repo"><a href="https://github.com/IBuySpy-Dev/app-timetracker-migration">app-timetracker-migration</a></span>
+        <div class="app-meta">
+          <span class="badge">Replatform</span>
+          <span class="badge stage">S5</span>
+        </div>
+      </div>
+
+      <div class="app-card">
+        <span class="app-name">IBuySpy Classic</span>
+        <span class="app-repo"><a href="https://github.com/IBuySpy-Dev/app-ibuspy-migration">app-ibuspy-migration</a></span>
+        <div class="app-meta">
+          <span class="badge">Replatform</span>
+          <span class="badge stage">S5</span>
+        </div>
+      </div>
+
+      <div class="app-card">
+        <span class="app-name">Classifieds</span>
+        <span class="app-repo"><a href="https://github.com/IBuySpy-Dev/app-classifieds-migration">app-classifieds-migration</a></span>
+        <div class="app-meta">
+          <span class="badge">Replatform</span>
+          <span class="badge stage">S4</span>
+        </div>
+      </div>
+
+      <div class="app-card">
+        <span class="app-name">PetShop</span>
+        <span class="app-repo"><a href="https://github.com/IBuySpy-Dev/app-petshop-migration">app-petshop-migration</a></span>
+        <div class="app-meta">
+          <span class="badge">Replatform</span>
+          <span class="badge stage">S5</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>IBuySpy-Dev · Migration Factory · <a href="https://github.com/IBuySpy-Dev">GitHub</a></p>
+  <div class="footer-links">
+    <a href="https://ibuyspy-dev.github.io/app-migration-with-ai/">Factory Dashboard</a>
+    <a href="https://github.com/IBuySpy-Dev/app-migration-with-ai">Hub Repo</a>
+    <a href="https://github.com/IBuySpy-Dev">Organization</a>
+  </div>
+</footer>
+
+</body>
+</html>
